@@ -280,10 +280,10 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
     console.log('[v0] Received messages:', messages.length);
 
-    // Using Vercel AI Gateway - zero config access to multiple providers
-    // Model string format: 'provider/model-name'
+    // Using Vercel AI Gateway with OpenAI BYOK
+    // Requires AI_GATEWAY_API_KEY set to your OpenAI API key
     const result = streamText({
-      model: 'anthropic/claude-sonnet-4-6',
+      model: 'openai/gpt-4o',
       system: SYSTEM_PROMPT,
       messages: await convertToModelMessages(messages),
       tools,
