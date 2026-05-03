@@ -7,7 +7,6 @@ import {
   InferUITools,
   UIDataTypes
 } from 'ai';
-import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
 import { SYSTEM_PROMPT } from '@/lib/ai/prompts';
 import { enclosureTemplates, getTemplateById } from '@/lib/templates/enclosure-templates';
@@ -281,16 +280,10 @@ export async function POST(req: Request) {
     const { messages } = await req.json();
     console.log('[v0] Received messages:', messages.length);
 
-    if (!process.env.OPENAI_API_KEY) {
-      console.error('[v0] OPENAI_API_KEY is not set');
-      return new Response(
-        JSON.stringify({ error: 'OpenAI API key is not configured' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
+    // Using Vercel AI Gateway - zero config access to multiple providers
+    // Model string format: 'provider/model-name'
     const result = streamText({
-      model: openai('gpt-4o'),
+      model: 'anthropic/claude-sonnet-4-6',
       system: SYSTEM_PROMPT,
       messages: await convertToModelMessages(messages),
       tools,

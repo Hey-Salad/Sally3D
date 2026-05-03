@@ -127,16 +127,20 @@ export function ChatInterface({ onModelGenerated }: ChatInterfaceProps) {
     if (!onModelGenerated) return;
     
     const lastMessage = messages[messages.length - 1];
+    console.log('[v0] Last message:', lastMessage?.role, lastMessage?.parts?.length, 'parts');
     if (lastMessage?.role !== 'assistant') return;
 
     for (const part of lastMessage.parts || []) {
+      console.log('[v0] Part type:', part.type, 'state' in part ? part.state : 'no-state');
       // AI SDK 6 tool parts have type 'tool-invocation' with toolName and result
       if (part.type === 'tool-invocation' && 'result' in part && part.state === 'result') {
         const toolName = part.toolName;
+        console.log('[v0] Tool invocation result:', toolName, part.result);
         if (toolName === 'generate_enclosure' || toolName === 'generate_pcb_enclosure') {
           const result = part.result as any;
           if (result?.success) {
             const params = result.parameters || result.enclosureParameters;
+            console.log('[v0] Params:', params, 'outerDimensions:', result.outerDimensions);
             if (params && result.outerDimensions) {
               onModelGenerated({
                 type: 'box',

@@ -28,6 +28,7 @@ export default function DashboardPage() {
   } | undefined>(undefined);
 
   const handleModelGenerated = (data: typeof modelData) => {
+    console.log('[v0] Model generated:', data);
     setModelData(data);
   };
 

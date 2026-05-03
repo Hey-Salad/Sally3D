@@ -60,7 +60,7 @@ function EnclosurePreview({
   return (
     <group>
       {/* Base/Bottom shell */}
-      <mesh ref={meshRef} position={[0, h / 2 - lidHeight / 2, 0]} castShadow receiveShadow>
+      <mesh ref={meshRef} position={[0, h / 2 - lidHeight / 2, 0]}>
         <boxGeometry args={[l, h - lidHeight, w]} />
         <meshStandardMaterial 
           color="#4a9c6d" 
@@ -83,7 +83,7 @@ function EnclosurePreview({
       </mesh>
 
       {/* Lid */}
-      <mesh ref={lidRef} position={[0, h - lidHeight / 2, 0]} castShadow>
+      <mesh ref={lidRef} position={[0, h - lidHeight / 2, 0]}>
         <boxGeometry args={[l, lidHeight, w]} />
         <meshStandardMaterial 
           color="#5ab87a" 
@@ -242,19 +242,19 @@ export function ModelViewer({
       )}
 
       {/* 3D Canvas */}
-      <Canvas shadows>
+      <Canvas 
+        shadows={false}
+        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 2]}
+      >
         <Suspense fallback={<LoadingFallback />}>
           <PerspectiveCamera makeDefault position={[2, 1.5, 2]} fov={45} />
           
-          {/* Lighting */}
-          <ambientLight intensity={0.4} />
-          <directionalLight 
-            position={[5, 5, 5]} 
-            intensity={0.8} 
-            castShadow
-            shadow-mapSize={[1024, 1024]}
-          />
-          <directionalLight position={[-3, 3, -3]} intensity={0.3} />
+          {/* Lighting - simplified without shadows */}
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[5, 5, 5]} intensity={0.8} />
+          <directionalLight position={[-3, 3, -3]} intensity={0.4} />
+          <directionalLight position={[0, -5, 0]} intensity={0.2} />
 
           {/* Grid */}
           {gridVisible && (
