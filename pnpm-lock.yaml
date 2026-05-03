@@ -167,6 +167,9 @@ importers:
       three:
         specifier: ^0.184.0
         version: 0.184.0
+      three-stdlib:
+        specifier: ^2.36.1
+        version: 2.36.1(three@0.184.0)
       vaul:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)

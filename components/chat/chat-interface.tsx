@@ -130,10 +130,11 @@ export function ChatInterface({ onModelGenerated }: ChatInterfaceProps) {
     if (lastMessage?.role !== 'assistant') return;
 
     for (const part of lastMessage.parts || []) {
-      if (part.type.startsWith('tool-') && 'output' in part) {
-        const toolName = part.type.replace('tool-', '');
+      // AI SDK 6 tool parts have type 'tool-invocation' with toolName and result
+      if (part.type === 'tool-invocation' && 'result' in part && part.state === 'result') {
+        const toolName = part.toolName;
         if (toolName === 'generate_enclosure' || toolName === 'generate_pcb_enclosure') {
-          const result = part.output as any;
+          const result = part.result as any;
           if (result?.success) {
             const params = result.parameters || result.enclosureParameters;
             if (params && result.outerDimensions) {
@@ -261,27 +262,27 @@ export function ChatInterface({ onModelGenerated }: ChatInterfaceProps) {
                     
                     {/* Render tool results */}
                     {message.parts?.map((part, index) => {
-                      if (part.type.startsWith('tool-')) {
-                        const toolName = part.type.replace('tool-', '');
+                      // AI SDK 6 uses 'tool-invocation' type with toolName property
+                      if (part.type === 'tool-invocation' && 'toolName' in part) {
+                        const toolName = part.toolName as string;
+                        const state = 'state' in part ? part.state : undefined;
                         
-                        if ('state' in part) {
-                          if (part.state === 'output-available' && 'output' in part) {
-                            return (
-                              <ToolResult 
-                                key={index}
-                                toolName={toolName} 
-                                result={part.output} 
-                              />
-                            );
-                          }
-                          if (part.state === 'input-available' || part.state === 'input-streaming') {
-                            return (
-                              <div key={index} className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                                <span>Executing {toolName.replace(/_/g, ' ')}...</span>
-                              </div>
-                            );
-                          }
+                        if (state === 'result' && 'result' in part) {
+                          return (
+                            <ToolResult 
+                              key={index}
+                              toolName={toolName} 
+                              result={part.result} 
+                            />
+                          );
+                        }
+                        if (state === 'call' || state === 'partial-call') {
+                          return (
+                            <div key={index} className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              <span>Executing {toolName.replace(/_/g, ' ')}...</span>
+                            </div>
+                          );
                         }
                       }
                       return null;
