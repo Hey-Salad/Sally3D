@@ -7,6 +7,7 @@ import {
   InferUITools,
   UIDataTypes
 } from 'ai';
+import { openai } from '@ai-sdk/openai';
 import { z } from 'zod';
 import { SYSTEM_PROMPT } from '@/lib/ai/prompts';
 import { enclosureTemplates, getTemplateById } from '@/lib/templates/enclosure-templates';
@@ -274,15 +275,35 @@ const tools = {
 export type ChatMessage = UIMessage<never, UIDataTypes, InferUITools<typeof tools>>;
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  console.log('[v0] Chat API called');
+  
+  try {
+    const { messages } = await req.json();
+    console.log('[v0] Received messages:', messages.length);
 
-  const result = streamText({
-    model: 'openai/gpt-4o',
-    system: SYSTEM_PROMPT,
-    messages: await convertToModelMessages(messages),
-    tools,
-    stopWhen: stepCountIs(5),
-  });
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('[v0] OPENAI_API_KEY is not set');
+      return new Response(
+        JSON.stringify({ error: 'OpenAI API key is not configured' }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
-  return result.toUIMessageStreamResponse();
+    const result = streamText({
+      model: openai('gpt-4o'),
+      system: SYSTEM_PROMPT,
+      messages: await convertToModelMessages(messages),
+      tools,
+      stopWhen: stepCountIs(5),
+    });
+
+    console.log('[v0] Streaming response');
+    return result.toUIMessageStreamResponse();
+  } catch (error) {
+    console.error('[v0] Chat API error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to process chat request', details: String(error) }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 }
