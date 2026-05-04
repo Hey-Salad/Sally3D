@@ -68,7 +68,7 @@ export function Sidebar({
     <aside className="w-64 h-screen bg-sidebar border-r border-sidebar-border flex flex-col flex-shrink-0">
       {/* Logo header */}
       <div className="flex items-center justify-between p-4 flex-shrink-0">
-        <HeySaladLogo size={32} className="h-8 w-auto" />
+        <HeySaladLogo size={96} className="h-24 w-auto" />
         <button
           onClick={() => setCollapsed(true)}
           className="p-1.5 rounded-md hover:bg-sidebar-accent transition-colors text-sidebar-foreground/60 hover:text-sidebar-foreground"
