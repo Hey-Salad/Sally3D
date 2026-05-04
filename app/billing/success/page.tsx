@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { LauncherIcon } from '@/components/heysalad/launcher-icon';
@@ -10,7 +10,7 @@ import { ArrowRight, CheckCircle2, Loader2, XCircle } from 'lucide-react';
 
 type Status = 'idle' | 'confirming' | 'confirmed' | 'error';
 
-export default function BillingSuccessPage() {
+function BillingSuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id') || searchParams.get('checkout_session_id');
   const { token, refreshUser, isLoading: authLoading } = useAuth();
@@ -106,5 +106,32 @@ export default function BillingSuccessPage() {
         )}
       </div>
     </main>
+  );
+}
+
+function BillingSuccessFallback() {
+  return (
+    <main className="min-h-screen bg-background flex items-center justify-center p-6">
+      <div className="w-full max-w-md bg-card border border-border rounded-2xl p-8 text-center">
+        <div className="flex justify-center mb-6">
+          <LauncherIcon size={64} />
+        </div>
+        <Loader2 className="w-8 h-8 mx-auto mb-4 animate-spin text-coral" />
+        <h1 className="text-xl font-semibold tracking-tight text-foreground mb-2">
+          Confirming your subscription
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Hang tight — we&apos;re activating your new plan.
+        </p>
+      </div>
+    </main>
+  );
+}
+
+export default function BillingSuccessPage() {
+  return (
+    <Suspense fallback={<BillingSuccessFallback />}>
+      <BillingSuccessContent />
+    </Suspense>
   );
 }
