@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from 'next'
-import { JetBrains_Mono, Inter } from 'next/font/google'
+import { JetBrains_Mono, Figtree } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const inter = Inter({ 
+const figtree = Figtree({ 
   subsets: ["latin"],
-  variable: "--font-sans"
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600", "700", "800", "900"]
 });
 
 const jetbrainsMono = JetBrains_Mono({ 
@@ -32,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark bg-background">
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body className={`${figtree.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
