@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { HeySaladLogo } from './logo';
 import { LauncherIcon } from './launcher-icon';
+import { UserFooter } from './user-footer';
 import { 
   Plus,
   Search,
@@ -71,6 +72,7 @@ export function Sidebar({
         >
           <Settings className="w-5 h-5" />
         </button>
+        <UserFooter collapsed />
       </aside>
     );
   }
@@ -148,6 +150,9 @@ export function Sidebar({
           </div>
         )}
       </div>
+
+      {/* User footer */}
+      <UserFooter />
     </aside>
   );
 }

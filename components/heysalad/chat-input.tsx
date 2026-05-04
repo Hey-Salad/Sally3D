@@ -9,8 +9,10 @@ import {
   Loader2,
   ChevronDown,
   Sparkles,
+  Lock,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useFeatureAccess } from './auth-provider';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -26,6 +28,7 @@ export function ChatInput({
   const [value, setValue] = useState('');
   const [researchActive, setResearchActive] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { canUseDeepResearch } = useFeatureAccess();
 
   const handleSubmit = () => {
     const trimmed = value.trim();
@@ -84,15 +87,18 @@ export function ChatInput({
           </button>
           <button
             type="button"
-            onClick={() => setResearchActive(!researchActive)}
+            onClick={() => canUseDeepResearch && setResearchActive(!researchActive)}
+            disabled={!canUseDeepResearch}
+            title={canUseDeepResearch ? 'Deep research mode' : 'Upgrade to MAX to use deep research'}
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors',
-              researchActive
+              researchActive && canUseDeepResearch
                 ? 'bg-coral-glow text-coral border border-coral/30'
-                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60 border border-transparent'
+                : 'text-muted-foreground hover:text-foreground hover:bg-secondary/60 border border-transparent',
+              !canUseDeepResearch && 'opacity-60 cursor-not-allowed hover:bg-transparent'
             )}
           >
-            <Globe className="w-4 h-4" />
+            {canUseDeepResearch ? <Globe className="w-4 h-4" /> : <Lock className="w-3.5 h-3.5" />}
             <span>Research</span>
           </button>
         </div>

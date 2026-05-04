@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { JetBrains_Mono, Figtree } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AuthProvider } from '@/components/heysalad/auth-provider'
 import './globals.css'
 
 const figtree = Figtree({ 
@@ -34,7 +35,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark bg-background">
       <body className={`${figtree.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
