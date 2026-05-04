@@ -7,10 +7,8 @@ import { LauncherIcon } from './launcher-icon';
 import { 
   Plus,
   Search,
-  Image as ImageIcon,
   Grid3x3,
   Telescope,
-  Code2,
   FolderPlus,
   Settings,
   PanelLeftClose,
@@ -23,7 +21,6 @@ interface SidebarProps {
   onNewChat?: () => void;
   activeChatId?: string;
   chats?: Array<{ id: string; title: string }>;
-  user?: { name: string; plan: string; avatar?: string };
 }
 
 const navItems = [
@@ -33,33 +30,46 @@ const navItems = [
   { id: 'templates', label: 'Templates', icon: Grid3x3 },
   { id: 'printers', label: 'Printers', icon: Printer },
   { id: 'research', label: 'Deep research', icon: Telescope },
-  { id: 'codey', label: 'Codey', icon: Code2 },
 ];
 
 export function Sidebar({ 
   onNewChat,
   activeChatId,
   chats = [],
-  user = { name: 'Peter Machona', plan: 'MAX Personal Plan' }
 }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
 
   if (collapsed) {
     return (
-      <aside className="w-14 h-screen bg-sidebar border-r border-sidebar-border flex flex-col items-center py-4 gap-3 flex-shrink-0">
+      <aside className="w-14 h-screen bg-sidebar border-r border-sidebar-border flex flex-col items-center py-4 gap-2 flex-shrink-0">
         <button
           onClick={() => setCollapsed(false)}
-          className="rounded-lg hover:opacity-80 transition-opacity"
+          className="rounded-lg hover:opacity-80 transition-opacity mb-2"
           aria-label="Expand sidebar"
         >
           <LauncherIcon size={36} />
         </button>
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <button
+              key={item.id}
+              onClick={item.id === 'new' ? onNewChat : undefined}
+              className="p-2 rounded-lg hover:bg-sidebar-accent transition-colors text-sidebar-foreground/80 hover:text-sidebar-foreground"
+              aria-label={item.label}
+              title={item.label}
+            >
+              <Icon className="w-5 h-5" />
+            </button>
+          );
+        })}
+        <div className="flex-1" />
         <button
-          onClick={onNewChat}
-          className="p-2 rounded-lg hover:bg-sidebar-accent transition-colors text-sidebar-foreground"
-          aria-label="New chat"
+          className="p-2 rounded-lg hover:bg-sidebar-accent transition-colors text-sidebar-foreground/80 hover:text-sidebar-foreground"
+          aria-label="Personal Config"
+          title="Personal Config"
         >
-          <Plus className="w-5 h-5" />
+          <Settings className="w-5 h-5" />
         </button>
       </aside>
     );
@@ -115,7 +125,7 @@ export function Sidebar({
       </div>
 
       {/* Chat history */}
-      <div className="flex-1 min-h-0 overflow-y-auto px-2 mt-6">
+      <div className="flex-1 min-h-0 overflow-y-auto px-2 mt-6 pb-4">
         <h3 className="px-3 text-xs text-sidebar-foreground/50 mb-2">Your chats</h3>
         {chats.length === 0 ? (
           <p className="px-3 text-xs text-sidebar-foreground/40">No chats yet</p>
@@ -137,35 +147,6 @@ export function Sidebar({
             ))}
           </div>
         )}
-      </div>
-
-      {/* User profile */}
-      <div className="flex-shrink-0 p-3 border-t border-sidebar-border">
-        <div className="flex items-center gap-3 px-2 py-2">
-          <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 overflow-hidden">
-            {user.avatar ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-sm font-medium text-sidebar-foreground">
-                {user.name.charAt(0)}
-              </span>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-sidebar-foreground truncate">
-              {user.name}
-            </p>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-semibold tracking-wider text-coral bg-coral-glow px-1.5 py-0.5 rounded">
-                MAX
-              </span>
-              <span className="text-xs text-sidebar-foreground/50 truncate">
-                Personal Plan
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </aside>
   );
