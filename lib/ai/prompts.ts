@@ -43,18 +43,18 @@ When the user requests a design, you should:
 
 Always provide specific, actionable guidance for hardware prototyping.`;
 
-export const ENCLOSURE_GENERATION_PROMPT = `Generate CadQuery Python code for a parametric enclosure with these specifications:
+export const ENCLOSURE_GENERATION_PROMPT = `Generate JavaScript CAD parameters for a parametric enclosure with these specifications:
 
 {specifications}
 
 Requirements:
-1. Use CadQuery best practices for parametric modeling
+1. Use the built-in JavaScript CAD enclosure generator parameters
 2. Include proper fillets and chamfers for 3D printing
 3. Generate both the base and lid as separate bodies
 4. Add mounting features as specified
 5. Include comments explaining key dimensions
 
-Output format: Valid Python code using CadQuery that can be executed to generate STEP/STL files.`;
+Output format: Structured enclosure parameters that can be converted to STL files.`;
 
 export const PCB_FIT_ANALYSIS_PROMPT = `Analyze the following PCB specification for enclosure design:
 

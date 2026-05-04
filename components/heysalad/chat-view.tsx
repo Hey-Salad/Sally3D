@@ -14,6 +14,7 @@ import {
   Wrench,
   Printer,
   Sparkles,
+  Download,
 } from 'lucide-react';
 
 interface ChatViewProps {
@@ -72,6 +73,27 @@ function ToolResult({ toolName, result }: { toolName: string; result: any }) {
         <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 bg-background/60 rounded-md text-xs font-mono">
           <span className="text-muted-foreground">Dimensions:</span>
           <span className="text-foreground">{result.outerDimensions.length} × {result.outerDimensions.width} × {result.outerDimensions.height} mm</span>
+        </div>
+      )}
+
+      {result.files?.base && result.files?.lid && (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <a
+            href={result.files.base}
+            download
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-background/60 px-3 text-xs font-medium text-foreground transition-colors hover:bg-background"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Base STL
+          </a>
+          <a
+            href={result.files.lid}
+            download
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-background/60 px-3 text-xs font-medium text-foreground transition-colors hover:bg-background"
+          >
+            <Download className="w-3.5 h-3.5" />
+            Lid STL
+          </a>
         </div>
       )}
       
@@ -137,7 +159,7 @@ export function ChatView({ onModelGenerated }: ChatViewProps) {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.role !== 'assistant') return;
 
-    for (const part of lastMessage.parts || []) {
+    for (const part of (lastMessage.parts || []) as any[]) {
       if (part.type === 'tool-invocation' && 'result' in part && part.state === 'result') {
         const toolName = part.toolName;
         if (toolName === 'generate_enclosure' || toolName === 'generate_pcb_enclosure') {
@@ -222,7 +244,7 @@ export function ChatView({ onModelGenerated }: ChatViewProps) {
                       </div>
                     )}
                     
-                    {message.parts?.map((part, index) => {
+                    {((message.parts || []) as any[]).map((part, index) => {
                       if (part.type === 'tool-invocation' && 'toolName' in part) {
                         const toolName = part.toolName as string;
                         const state = 'state' in part ? part.state : undefined;
