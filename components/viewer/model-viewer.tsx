@@ -63,7 +63,7 @@ function EnclosurePreview({
       <mesh ref={meshRef} position={[0, h / 2 - lidHeight / 2, 0]}>
         <boxGeometry args={[l, h - lidHeight, w]} />
         <meshStandardMaterial 
-          color="#4a9c6d" 
+          color="#e94b3c" 
           transparent 
           opacity={0.85}
           roughness={0.3}
@@ -75,7 +75,7 @@ function EnclosurePreview({
       <mesh position={[0, h / 2 - lidHeight / 2, 0]}>
         <boxGeometry args={[l - wall * 2, h - lidHeight - wall, w - wall * 2]} />
         <meshStandardMaterial 
-          color="#2d5a40" 
+          color="#7a2820" 
           transparent 
           opacity={0.3}
           side={THREE.BackSide}
@@ -86,7 +86,7 @@ function EnclosurePreview({
       <mesh ref={lidRef} position={[0, h - lidHeight / 2, 0]}>
         <boxGeometry args={[l, lidHeight, w]} />
         <meshStandardMaterial 
-          color="#5ab87a" 
+          color="#f06354" 
           transparent 
           opacity={0.9}
           roughness={0.2}

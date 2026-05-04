@@ -14,14 +14,14 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'ProtoForge AI - Hardware Prototyping Assistant',
-  description: 'AI-powered 3D enclosure design, PCB fitting, and 3D printer management for rapid hardware prototyping',
+  title: 'HeySalad — Hardware Prototyping AI',
+  description: 'AI-powered 3D enclosure design, PCB fitting, and 3D printer management. Powered by HeySalad.',
   generator: 'v0.app',
-  keywords: ['3D printing', 'PCB', 'enclosure design', 'hardware prototyping', 'CAD', 'AI'],
+  keywords: ['HeySalad', '3D printing', 'PCB', 'enclosure design', 'hardware prototyping', 'CAD', 'AI'],
 }
 
 export const viewport: Viewport = {
-  themeColor: '#1a1a2e',
+  themeColor: '#000000',
   colorScheme: 'dark',
 }
 
