@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 import { LauncherIcon } from './launcher-icon';
 import { ChatInput } from './chat-input';
 import { ThinkingStates } from './thinking-states';
+import { AuthDialog } from './auth-dialog';
+import { useAuth } from './auth-provider';
 import { ModelViewer } from '@/components/viewer/model-viewer';
 import { 
   Box, 
@@ -146,6 +148,8 @@ const exampleQuestions = [
 export function ChatView({ onModelGenerated }: ChatViewProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [generatedModel, setGeneratedModel] = useState<any>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const { isAuthenticated, user } = useAuth();
   
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
@@ -204,7 +208,12 @@ export function ChatView({ onModelGenerated }: ChatViewProps) {
       {/* Messages area or welcome */}
       <div className="flex-1 min-h-0 overflow-y-auto pt-6" ref={scrollRef}>
         {!hasMessages ? (
-          <WelcomeScreen onExampleClick={handleSend} />
+          <WelcomeScreen
+            isAuthenticated={isAuthenticated}
+            userTier={user?.tier}
+            onExampleClick={handleSend}
+            onSignIn={() => setAuthOpen(true)}
+          />
         ) : (
           <div className="max-w-3xl mx-auto px-6 pb-8 space-y-8">
             {messages.map((message) => {
@@ -312,12 +321,24 @@ export function ChatView({ onModelGenerated }: ChatViewProps) {
           )}
         </div>
       </div>
+      <AuthDialog open={authOpen} onOpenChange={setAuthOpen} />
     </div>
   );
 }
 
-function WelcomeScreen({ onExampleClick }: { onExampleClick: (text: string) => void }) {
+function WelcomeScreen({
+  isAuthenticated,
+  userTier,
+  onExampleClick,
+  onSignIn,
+}: {
+  isAuthenticated: boolean;
+  userTier?: string;
+  onExampleClick: (text: string) => void;
+  onSignIn: () => void;
+}) {
   const greeting = getGreeting();
+  const showFreeCounter = !userTier || userTier === 'free';
 
   return (
     <div className="max-w-3xl mx-auto px-6 pt-12 pb-8">
@@ -330,17 +351,22 @@ function WelcomeScreen({ onExampleClick }: { onExampleClick: (text: string) => v
         </p>
       </div>
 
-      <div className="flex justify-center mb-12">
-        <div className="inline-flex items-center gap-3 pl-5 pr-1 py-1 rounded-full bg-coral-glow border border-coral/20">
-          <span className="text-sm text-foreground/90">3 of 3 free chats left.</span>
-          <button
-            type="button"
-            className="px-4 py-1.5 rounded-full bg-coral hover:bg-coral/90 text-white text-sm font-medium transition-colors"
-          >
-            Sign in
-          </button>
+      {showFreeCounter && (
+        <div className="flex justify-center mb-12">
+          <div className="inline-flex items-center gap-3 pl-5 pr-1 py-1 rounded-full bg-coral-glow border border-coral/20">
+            <span className="text-sm text-foreground/90">3 of 3 free chats left.</span>
+            {!isAuthenticated && (
+              <button
+                type="button"
+                onClick={onSignIn}
+                className="px-4 py-1.5 rounded-full bg-coral hover:bg-coral/90 text-white text-sm font-medium transition-colors"
+              >
+                Sign in
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="grid sm:grid-cols-2 gap-2 max-w-2xl mx-auto">
         {exampleQuestions.map((q) => (
