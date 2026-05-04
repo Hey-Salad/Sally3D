@@ -5,7 +5,7 @@ import { DefaultChatTransport } from 'ai';
 import { useRef, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
+
 import { 
   Send, 
   Bot, 
@@ -157,10 +157,7 @@ export function ChatInterface({ onModelGenerated }: ChatInterfaceProps) {
   // Auto-scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
-      const scrollContainer = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollContainer) {
-        scrollContainer.scrollTop = scrollContainer.scrollHeight;
-      }
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
@@ -185,7 +182,7 @@ export function ChatInterface({ onModelGenerated }: ChatInterfaceProps) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Header */}
       <div className="flex-shrink-0 px-4 py-3 border-b border-border">
         <div className="flex items-center gap-2">
@@ -200,8 +197,8 @@ export function ChatInterface({ onModelGenerated }: ChatInterfaceProps) {
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1" ref={scrollRef}>
-        <div className="divide-y divide-border/50">
+      <div className="flex-1 min-h-0 overflow-y-auto" ref={scrollRef}>
+        <div className="divide-y divide-border/50 pb-4">
           {messages.length === 0 ? (
             <div className="p-6">
               <div className="text-center mb-6">
@@ -312,7 +309,7 @@ export function ChatInterface({ onModelGenerated }: ChatInterfaceProps) {
             </div>
           )}
         </div>
-      </ScrollArea>
+      </div>
 
       {/* Input */}
       <div className="flex-shrink-0 p-4 border-t border-border bg-background">
