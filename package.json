@@ -66,6 +66,7 @@
     "three": "^0.184.0",
     "three-stdlib": "^2.36.1",
     "vaul": "^1.1.2",
+    "workflow": "^4.2.4",
     "zod": "^3.24.1"
   },
   "devDependencies": {
