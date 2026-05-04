@@ -9,6 +9,7 @@ import {
 } from 'ai';
 import { z } from 'zod';
 import { SYSTEM_PROMPT } from '@/lib/ai/prompts';
+import { createJscadModelResult } from '@/lib/cad/jscad-enclosure';
 import { enclosureTemplates, getTemplateById } from '@/lib/templates/enclosure-templates';
 import type { EnclosureParameters } from '@/lib/templates/types';
 
@@ -37,6 +38,13 @@ const PortCutoutSchema = z.object({
   type: z.enum(['usb', 'hdmi', 'power', 'ethernet', 'custom']),
   label: z.string().nullable(),
 });
+
+function normalizePortCutouts(cutouts: z.infer<typeof PortCutoutSchema>[] | null | undefined) {
+  return (cutouts ?? []).map(({ label, ...cutout }) => ({
+    ...cutout,
+    ...(label ? { label } : {}),
+  }));
+}
 
 // Tool definitions
 const tools = {
@@ -80,7 +88,7 @@ const tools = {
         lidOverlap: baseParams.lidOverlap ?? 2,
         mountingHoles: params.mountingHoles ?? [],
         standoffHeight: baseParams.standoffHeight ?? 4,
-        portCutouts: params.portCutouts ?? [],
+        portCutouts: normalizePortCutouts(params.portCutouts),
         ventilation: params.ventilation ?? { type: 'none', area: 'all', density: 'medium' },
         textEmboss: params.textEmboss ?? undefined,
         printOrientation: baseParams.printOrientation ?? 'lid-up',
@@ -94,15 +102,18 @@ const tools = {
         width: finalParams.innerDimensions.width + (finalParams.wallThickness * 2),
         height: finalParams.innerDimensions.height + finalParams.wallThickness + 5,
       };
+      const cadModel = createJscadModelResult(modelId, finalParams);
 
       return {
         success: true,
         modelId,
+        engine: cadModel.engine,
+        files: cadModel.files,
         parameters: finalParams,
         outerDimensions,
         summary: `Generated ${params.templateId || 'custom'} enclosure: ${outerDimensions.length}x${outerDimensions.width}x${outerDimensions.height}mm (outer). Wall thickness: ${finalParams.wallThickness}mm, ${finalParams.lidType} lid, ${finalParams.mountingHoles?.length ?? 0} mounting holes, ${finalParams.portCutouts?.length ?? 0} port cutouts.`,
-        cadServiceRequired: true,
-        message: 'Enclosure design created. The 3D model preview will appear in the viewer. You can modify parameters or send to printer when ready.',
+        cadServiceRequired: false,
+        message: 'Enclosure design created with the JavaScript CAD engine. The preview will appear in the viewer, and STL downloads are available for the base and lid.',
       };
     },
   }),
@@ -142,7 +153,7 @@ const tools = {
         type: 'standoff' as const,
       }));
 
-      const portCutouts = (params.connectors ?? []).map(conn => ({
+      const portCutouts = normalizePortCutouts(params.connectors).map(conn => ({
         ...conn,
         y: conn.y + params.clearanceBottom + 4,
       }));
@@ -160,10 +171,13 @@ const tools = {
         printOrientation: 'lid-up',
         supportRequired: true,
       };
+      const cadModel = createJscadModelResult(modelId, enclosureParams);
 
       return {
         success: true,
         modelId,
+        engine: cadModel.engine,
+        files: cadModel.files,
         pcbName: params.pcbName,
         pcbDimensions: params.pcbDimensions,
         enclosureParameters: enclosureParams,
