@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { HeySaladLogo } from './logo';
+import { LauncherIcon } from './launcher-icon';
 import { 
   Plus,
   Search,
@@ -48,10 +49,10 @@ export function Sidebar({
       <aside className="w-14 h-screen bg-sidebar border-r border-sidebar-border flex flex-col items-center py-4 gap-3 flex-shrink-0">
         <button
           onClick={() => setCollapsed(false)}
-          className="p-2 rounded-lg hover:bg-sidebar-accent transition-colors"
+          className="rounded-lg hover:opacity-80 transition-opacity"
           aria-label="Expand sidebar"
         >
-          <HeySaladLogo size={24} />
+          <LauncherIcon size={36} />
         </button>
         <button
           onClick={onNewChat}

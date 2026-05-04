@@ -4,7 +4,7 @@ import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useRef, useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { HeySaladLogo } from './logo';
+import { LauncherIcon } from './launcher-icon';
 import { ChatInput } from './chat-input';
 import { ThinkingStates } from './thinking-states';
 import { ModelViewer } from '@/components/viewer/model-viewer';
@@ -210,7 +210,7 @@ export function ChatView({ onModelGenerated }: ChatViewProps) {
               return (
                 <div key={message.id} className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <HeySaladLogo size={24} />
+                    <LauncherIcon size={28} />
                     <span className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
                       Sally
                     </span>
@@ -259,7 +259,7 @@ export function ChatView({ onModelGenerated }: ChatViewProps) {
             {isLoading && (
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <HeySaladLogo size={24} />
+                  <LauncherIcon size={28} />
                   <span className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">
                     Sally
                   </span>
