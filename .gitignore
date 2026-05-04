@@ -13,6 +13,7 @@ next.user-config.*
 # Common ignores
 node_modules
 .next/
+.swc/
 .DS_Store
 tsconfig.tsbuildinfo
 .npm-cache/

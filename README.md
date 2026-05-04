@@ -13,16 +13,49 @@ This repository is linked to a [v0](https://v0.app) project. You can continue de
 First, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+## CAD Workflow
+
+Sally3D has two CAD generation paths:
+
+- `POST /api/cad/generate` returns a synchronous JSCAD result for the current chat UI.
+- `POST /api/cad/workflow` starts a durable Vercel Workflow run and returns a `runId`.
+- `GET /api/cad/workflow?runId=...` checks workflow status and returns the completed STL download links.
+
+The Workflow integration follows the Vercel Workflow / Workflow SDK docs from the Builder's Night resources:
+
+- [Vercel Workflow](https://vercel.com/docs/workflow)
+- [Workflow SDK Next.js guide](https://useworkflow.dev/docs/getting-started/next)
+- [Starting Workflows](https://useworkflow.dev/docs/foundations/starting-workflows)
+- [Building durable AI agents](https://useworkflow.dev/docs/ai)
+- [Workflow SDK repo](https://github.com/vercel/workflow)
+- [Workflow examples](https://github.com/vercel/workflow-examples)
+
+Example request:
+
+```bash
+curl -X POST http://localhost:3000/api/cad/workflow \
+  -H 'content-type: application/json' \
+  --data '{
+    "innerDimensions": { "length": 80, "width": 50, "height": 24 },
+    "wallThickness": 2,
+    "cornerRadius": 2,
+    "lidType": "snap",
+    "lidOverlap": 2,
+    "mountingHoles": [],
+    "standoffHeight": 4,
+    "portCutouts": [],
+    "ventilation": { "type": "slots", "area": "top", "density": "low" },
+    "printOrientation": "lid-up",
+    "supportRequired": false
+  }'
+```
 
 ## Learn More
 

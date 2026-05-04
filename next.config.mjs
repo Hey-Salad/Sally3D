@@ -1,5 +1,6 @@
 import { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { withWorkflow } from 'workflow/next'
 
 const repoRoot = dirname(fileURLToPath(import.meta.url))
 
@@ -16,4 +17,4 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+export default withWorkflow(nextConfig)
