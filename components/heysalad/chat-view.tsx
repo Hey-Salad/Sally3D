@@ -14,8 +14,6 @@ import {
   Wrench,
   Printer,
   Sparkles,
-  Sun,
-  Moon,
 } from 'lucide-react';
 
 interface ChatViewProps {
@@ -181,20 +179,8 @@ export function ChatView({ onModelGenerated }: ChatViewProps) {
 
   return (
     <div className="flex flex-col h-screen bg-background">
-      {/* Theme toggle */}
-      <div className="flex justify-end p-4 flex-shrink-0">
-        <button
-          type="button"
-          className="flex items-center gap-1 px-2 py-1.5 rounded-full bg-coral-glow border border-coral/20"
-          aria-label="Toggle theme"
-        >
-          <Sun className="w-4 h-4 text-coral/70" />
-          <Moon className="w-4 h-4 text-coral" />
-        </button>
-      </div>
-
       {/* Messages area or welcome */}
-      <div className="flex-1 min-h-0 overflow-y-auto" ref={scrollRef}>
+      <div className="flex-1 min-h-0 overflow-y-auto pt-6" ref={scrollRef}>
         {!hasMessages ? (
           <WelcomeScreen onExampleClick={handleSend} />
         ) : (
